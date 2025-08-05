@@ -1,7 +1,6 @@
 package hu.klm60o.feedapp.ui.theme.repositoryimpl
 
 import hu.klm60o.feedapp.ui.theme.model.Product
-import hu.klm60o.feedapp.ui.theme.model.Response
 import hu.klm60o.feedapp.ui.theme.repository.ProductRepository
 import kotlinx.coroutines.flow.callbackFlow
 import org.json.JSONObject
@@ -20,7 +19,14 @@ class ProductRepositoryImpl(
     private var limit: Int,
     private var skip: Int
 ): ProductRepository {
-    suspend override fun getProduct(): List<Product> {
+
+    //Sets the id for the
+    var id = 1
+
+    //Gets the products in a list
+    //If you set the limit higher, then more products are returned
+    //I don't really like this solution, but I didn't want to use any 3rd party libraries
+    override suspend fun getProducts(): List<Product> {
         val url = "$apiPath?limit=$limit&skip=$skip"
         try {
             val connection = URL(url).openConnection() as HttpURLConnection
@@ -54,13 +60,10 @@ class ProductRepositoryImpl(
                     skip += limit
                     return productsList
 
-                    //trySend(Response.Success(productsList))
-
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            //trySend(Response.Failure(e))
         }
         return emptyList()
     }

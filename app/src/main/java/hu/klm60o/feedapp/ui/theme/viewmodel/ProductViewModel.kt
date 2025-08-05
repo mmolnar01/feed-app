@@ -1,19 +1,15 @@
 package hu.klm60o.feedapp.ui.theme.viewmodel
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hu.klm60o.feedapp.ui.theme.model.Product
-import hu.klm60o.feedapp.ui.theme.model.Response
 import hu.klm60o.feedapp.ui.theme.repository.ProductRepository
-import hu.klm60o.feedapp.ui.theme.repository.ProductsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,18 +22,21 @@ import java.util.Locale
 class ProductViewModel(
     private val repository: ProductRepository
 ) : ViewModel() {
-    //private val _productsState = MutableStateFlow<ProductsResponse>(Response.Loading)
-    //val productsState: StateFlow<ProductsResponse> = _productsState.asStateFlow()
+
+    //Create the flow
     private val _productsState = MutableStateFlow<List<Product>>(emptyList())
     val productsState: StateFlow<List<Product>> = _productsState.asStateFlow()
 
+    //The job which will fetch us the products
     private var fetchJob: Job? = null
 
-    private val productsQueue = mutableListOf<Product>()
+    private var productsQueue = listOf<Product>()
     private var isPaused = false
     private var isStarted = false
 
-    fun startCommand() {
+    //Start command function
+    //Launches a coroutine to get the products every 5 seconds
+    private fun startCommand() {
         if (isStarted) {
             return
         }
@@ -45,10 +44,19 @@ class ProductViewModel(
         isStarted = true
         fetchJob = viewModelScope.launch {
             while (isActive) {
-                productsQueue.addAll(repository.getProduct())
+                val newProducts = withContext(Dispatchers.IO) {
+                    repository.getProducts()
+                }
+
+                newProducts.let {
+                    val oldList = productsQueue
+                    productsQueue = oldList + newProducts
+                }
+
                 if (!isPaused) {
                     _productsState.value = productsQueue
                 }
+
                 delay(5000)
             }
         }
@@ -56,33 +64,45 @@ class ProductViewModel(
     }
 
 
-
-    fun stopCommand() {
+    //Stop command function
+    //Cancels the coroutine and sets the flag to false
+    private fun stopCommand() {
         fetchJob?.cancel()
         fetchJob = null
-        addCommand("Stop")
+
         isStarted = false
         isPaused = false
-        productsQueue.clear()
+
+        productsQueue = emptyList()
+
+        addCommand("Stop")
+
         repository.resetSkip()
     }
 
-    fun pauseCommand() {
+    //Pause command function
+    private fun pauseCommand() {
         if (!isStarted || isPaused) {
             return
         }
+
         isPaused = true
+
         addCommand("Pause")
     }
 
-    fun resumeCommand() {
+    //Resume command function
+    private fun resumeCommand() {
         if (!isStarted || !isPaused) {
             return
         }
+
         _productsState.value = productsQueue
+
         addCommand("Resume")
     }
 
+    //Function to process the commands
     fun processCommand(command: String) {
         when (command.lowercase()) {
             "start" -> startCommand()
@@ -92,8 +112,15 @@ class ProductViewModel(
         }
     }
 
+    //Adds a command to the List
+    //If it is the first command, the id is zero
     private fun addCommand(s: String) {
-        val id = productsQueue.last().id + 1
+        var id = 0L
+
+        if (!productsQueue.isEmpty()) {
+            id = productsQueue.last().id + 1
+        }
+
         val productDataClass = Product(
             id = id,
             description = s,
@@ -101,7 +128,9 @@ class ProductViewModel(
             isCommand = true,
             thumbnail = null
         )
-        productsQueue.add(productDataClass)
+
+        val oldList = productsQueue
+        productsQueue = oldList + productDataClass
         _productsState.value = productsQueue
     }
 }

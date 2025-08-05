@@ -6,12 +6,13 @@ plugins {
 
 android {
     namespace = "hu.klm60o.feedapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "hu.klm60o.feedapp"
         minSdk = 24
-        targetSdk = 34
+        //noinspection EditedTargetSdkVersion
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
