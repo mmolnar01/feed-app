@@ -1,2 +1,2 @@
-# news-app
-Repository for the News App
+# feed-app
+Repository for the Feed App
