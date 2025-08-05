@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
             skip = 0
         )
 
+        //Create the viewModel with the factorys
         viewModel = ViewModelProvider(this, ProductViewModelFactory(productRepository)).get(ProductViewModel::class.java)
 
         enableEdgeToEdge()

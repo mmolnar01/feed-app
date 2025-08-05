@@ -16,9 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import hu.klm60o.feedapp.ui.theme.model.Product
 
 @Composable
@@ -46,11 +48,15 @@ fun FeedCard(
                     Text(
                         text = product.description,
                         maxLines = 4,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
                     )
                 }
                 Row(
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
                     Text(
                         text = product.timestamp
@@ -80,10 +86,15 @@ fun FeedCard(
                     Text(
                         text = product.description,
                         maxLines = 4,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = 15.sp
                     )
                 }
-                Row {
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
                     Text(
                         text = product.timestamp
                     )
@@ -93,7 +104,7 @@ fun FeedCard(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun FeedItemPreview() {
     FeedCard(Product(
@@ -105,7 +116,7 @@ fun FeedItemPreview() {
     ))
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun CommandPreview() {
     FeedCard(Product(

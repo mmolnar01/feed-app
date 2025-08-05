@@ -2,7 +2,6 @@ package hu.klm60o.feedapp.ui.theme.repositoryimpl
 
 import hu.klm60o.feedapp.ui.theme.model.Product
 import hu.klm60o.feedapp.ui.theme.repository.ProductRepository
-import kotlinx.coroutines.flow.callbackFlow
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -20,8 +19,8 @@ class ProductRepositoryImpl(
     private var skip: Int
 ): ProductRepository {
 
-    //Sets the id for the
-    var id = 1
+    //Sets the id for the Products
+    private var idCounter = 0
 
     //Gets the products in a list
     //If you set the limit higher, then more products are returned
@@ -46,17 +45,23 @@ class ProductRepositoryImpl(
                 if (products.length() > 0) {
                     val productsList = mutableListOf<Product>()
 
+                    //Read the data from the JSON and create the products
                     for (i in 0 until products.length()) {
                         val product = products.getJSONObject(i)
                         val productDataClass = Product(
-                            id = product.getLong("id"),
+                            id = idCounter,
                             description = product.getString("description"),
                             thumbnail = product.getString("thumbnail"),
                             timestamp = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date()),
                             isCommand = false
                         )
                         productsList.add(productDataClass)
+
+                        //Increment id
+                        idCounter++
                     }
+
+                    //Increment skip
                     skip += limit
                     return productsList
 
@@ -68,7 +73,19 @@ class ProductRepositoryImpl(
         return emptyList()
     }
 
-    override fun resetSkip() {
+    //Resets the skip and the id counter
+    override fun resetRepo() {
         skip = 0
+        idCounter = 1
+    }
+
+    //Increments the id counter by one
+    override fun incrementIdCounter() {
+        idCounter++
+    }
+
+    //Gets the value of the id counter
+    override fun getIdCounter(): Int {
+        return idCounter
     }
 }
