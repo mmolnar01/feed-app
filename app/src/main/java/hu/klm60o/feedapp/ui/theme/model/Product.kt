@@ -4,7 +4,6 @@ import java.sql.Timestamp
 
 
 //Product Data class to fetch data from a JSON file
-
 data class Product(
     val id: Int,
     val description: String,

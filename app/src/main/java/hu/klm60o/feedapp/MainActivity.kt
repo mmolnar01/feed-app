@@ -29,14 +29,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Dependency injection
+        //Create the repo and then inject it to the viewModel
         val productRepository = ProductRepositoryImpl(
             apiPath = "https://dummyjson.com/products",
             limit = 1,
             skip = 0
         )
 
-        //Create the viewModel with the factorys
+        //Create the viewModel with the factory
         viewModel = ViewModelProvider(this, ProductViewModelFactory(productRepository)).get(ProductViewModel::class.java)
 
         enableEdgeToEdge()

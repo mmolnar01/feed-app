@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import hu.klm60o.feedapp.ui.theme.model.Product
 
+//Composable which displays the items in a LazyColumn
 @Composable
 fun FeedContent(
     feedList: List<Product>
@@ -23,6 +24,7 @@ fun FeedContent(
         }
     }
 
+    //Display the items in a LazyColumn
     LazyColumn(
         state = listState,
         modifier = Modifier
