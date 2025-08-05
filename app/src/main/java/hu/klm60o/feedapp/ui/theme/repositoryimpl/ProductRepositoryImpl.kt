@@ -20,7 +20,7 @@ class ProductRepositoryImpl(
 ): ProductRepository {
 
     //Sets the id for the Products
-    private var idCounter = 1
+    private var idCounter = 0
 
     //Gets the products in a list
     //If you set the limit higher, then more products are returned
@@ -73,12 +73,19 @@ class ProductRepositoryImpl(
         return emptyList()
     }
 
+    //Resets the skip and the id counter
     override fun resetRepo() {
         skip = 0
         idCounter = 1
     }
 
+    //Increments the id counter by one
     override fun incrementIdCounter() {
         idCounter++
+    }
+
+    //Gets the value of the id counter
+    override fun getIdCounter(): Int {
+        return idCounter
     }
 }

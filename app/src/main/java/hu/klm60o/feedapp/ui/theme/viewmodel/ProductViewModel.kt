@@ -34,6 +34,8 @@ class ProductViewModel(
     private var isPaused = false
     private var isStarted = false
 
+    private var id = 0
+
     //Start command function
     //Launches a coroutine to get the products every 5 seconds
     private fun startCommand() {
@@ -49,12 +51,12 @@ class ProductViewModel(
                 }
 
                 newProducts.let {
-                    val oldList = productsQueue
-                    productsQueue = oldList + newProducts
+                    productsQueue = productsQueue + newProducts
                 }
 
                 if (!isPaused) {
-                    _productsState.value = productsQueue
+                    _productsState.value += productsQueue
+                    productsQueue = emptyList()
                 }
 
                 delay(5000)
@@ -99,8 +101,6 @@ class ProductViewModel(
 
         addCommand("Resume")
 
-        _productsState.value = productsQueue
-
         isPaused = false
     }
 
@@ -117,14 +117,11 @@ class ProductViewModel(
     //Adds a command to the List
     //If it is the first command, the id is zero
     private fun addCommand(s: String) {
-        var id = 0
 
-        if (!productsQueue.isEmpty()) {
-            id = productsQueue.last().id + 1
-            repository.incrementIdCounter()
-        }
+        id = repository.getIdCounter()
+        repository.incrementIdCounter()
 
-        val productDataClass = Product(
+        val newCommand = Product(
             id = id,
             description = s,
             timestamp = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date()),
@@ -132,8 +129,8 @@ class ProductViewModel(
             thumbnail = null
         )
 
-        val oldList = productsQueue
-        productsQueue = oldList + productDataClass
-        _productsState.value = productsQueue
+        _productsState.value = _productsState.value + newCommand + productsQueue
+        productsQueue = emptyList()
+
     }
 }

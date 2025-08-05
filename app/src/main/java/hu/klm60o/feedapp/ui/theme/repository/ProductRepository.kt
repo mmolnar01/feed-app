@@ -9,4 +9,5 @@ interface ProductRepository {
     suspend fun getProducts(): List<Product>
     fun resetRepo()
     fun incrementIdCounter()
+    fun getIdCounter(): Int
 }
