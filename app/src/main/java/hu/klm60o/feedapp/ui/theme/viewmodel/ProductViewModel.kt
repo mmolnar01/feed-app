@@ -131,6 +131,5 @@ class ProductViewModel(
 
         _productsState.value = _productsState.value + newCommand + productsQueue
         productsQueue = emptyList()
-
     }
 }

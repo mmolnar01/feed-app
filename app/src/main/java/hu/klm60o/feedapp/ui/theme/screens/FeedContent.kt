@@ -13,13 +13,13 @@ import hu.klm60o.feedapp.ui.theme.model.Product
 
 @Composable
 fun FeedContent(
-    list: List<Product>
+    feedList: List<Product>
 ) {
     val listState = rememberLazyListState()
 
-    LaunchedEffect(list) {
-        if (list.isNotEmpty()) {
-            listState.animateScrollToItem(list.size - 1)
+    LaunchedEffect(feedList) {
+        if (feedList.isNotEmpty()) {
+            listState.animateScrollToItem(feedList.size - 1)
         }
     }
 
@@ -29,8 +29,8 @@ fun FeedContent(
             .fillMaxSize()
             .padding(3.dp)
     ) {
-        items(list, key = { product -> product.id }) { product ->
-            FeedCard(product)
+        items(feedList, key = { product -> product.id }) { feedItem ->
+            FeedCard(feedItem)
         }
     }
 }

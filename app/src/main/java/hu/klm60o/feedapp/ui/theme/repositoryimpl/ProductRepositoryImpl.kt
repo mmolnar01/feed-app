@@ -76,7 +76,6 @@ class ProductRepositoryImpl(
     //Resets the skip and the id counter
     override fun resetRepo() {
         skip = 0
-        idCounter = 1
     }
 
     //Increments the id counter by one
