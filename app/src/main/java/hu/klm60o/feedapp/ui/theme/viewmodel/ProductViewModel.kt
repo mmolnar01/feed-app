@@ -77,7 +77,7 @@ class ProductViewModel(
 
         addCommand("Stop")
 
-        repository.resetSkip()
+        repository.resetRepo()
     }
 
     //Pause command function
@@ -97,9 +97,11 @@ class ProductViewModel(
             return
         }
 
+        addCommand("Resume")
+
         _productsState.value = productsQueue
 
-        addCommand("Resume")
+        isPaused = false
     }
 
     //Function to process the commands
@@ -115,10 +117,11 @@ class ProductViewModel(
     //Adds a command to the List
     //If it is the first command, the id is zero
     private fun addCommand(s: String) {
-        var id = 0L
+        var id = 0
 
         if (!productsQueue.isEmpty()) {
             id = productsQueue.last().id + 1
+            repository.incrementIdCounter()
         }
 
         val productDataClass = Product(

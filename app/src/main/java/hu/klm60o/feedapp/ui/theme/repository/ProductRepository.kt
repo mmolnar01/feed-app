@@ -7,5 +7,6 @@ import hu.klm60o.feedapp.ui.theme.model.Product
 interface ProductRepository {
     //Gets a list of products
     suspend fun getProducts(): List<Product>
-    fun resetSkip()
+    fun resetRepo()
+    fun incrementIdCounter()
 }
